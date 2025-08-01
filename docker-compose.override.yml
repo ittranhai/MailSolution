@@ -1,0 +1,15 @@
+# version: '3.4'
+
+services:
+  services.Api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80       
+      - ServiceName=Mail Solution API
+      - MailSetting__Mail=ittranhai@gmail.com
+      - MailSetting__DisplayName=Mail Solution
+      - MailSetting__Password=sqxljnxmidrvpelk
+      - MailSetting__Host=smtp.gmail.com
+      - MailSetting__Port=587
+    ports:
+      - "8000:80"
