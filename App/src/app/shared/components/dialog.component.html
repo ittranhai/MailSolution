@@ -1,0 +1,10 @@
+<mat-dialog-content>
+  <mat-form-field style="width: 100%;">
+    <mat-label>Nhập tên template </mat-label>
+    <input matInput [(ngModel)]="data">
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions >
+  <button mat-flat-button color="warn" style="width: 150px;" (click)="onNoClick()">Cancel</button>
+  <button mat-flat-button color="primary" style="width: 150px;" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</mat-dialog-actions>

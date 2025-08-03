@@ -1,0 +1,146 @@
+import { Component, Provider, SecurityContext } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { SharedModule } from './shared/shared.module';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { MatDrawerMode, MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
+import { ITemplate } from './shared/models/account';
+import { MonacoEditorConstructionOptions, MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
+import { ApiMailService, ApiTempateService } from './shared/services/all.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { catchError } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from './shared/components/dialog.component';
+import { IMail } from './shared/models/mail';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet,SharedModule,MatSidenavModule,MonacoEditorModule],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
+  providers: [
+    SharedModule.forRoot().providers as Provider,
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { floatLabel: 'always' } },
+  ]
+})
+export class AppComponent {
+  templates: ITemplate[] =[];
+  mail: IMail = {
+    toEmail: '',
+    subject: '',
+    templateName: '',
+    jsonBody: ''
+  };
+  HtmlOptions: MonacoEditorConstructionOptions = {
+    language: 'html', // java, javascript, python, csharp, html, markdown, ruby
+    theme: 'vs-dark', // vs, vs-dark, hc-black
+    automaticLayout: true,
+  };
+  selectedTemplate:ITemplate = {
+    templateName: '',
+    content: '',
+    jsonModel: ''
+  }
+  JsonOptions: MonacoEditorConstructionOptions = {
+    language: 'json', // java, javascript, python, csharp, html, markdown, ruby
+    theme: 'vs-light', // vs, vs-dark, hc-black
+    automaticLayout: true,
+  };
+  nameTemplate: string = '';
+  safeHtmlContent: SafeHtml = "";
+  private updatePreviewTimeout: any;
+  constructor(
+    protected apiTemplateService: ApiTempateService<ITemplate>,
+    protected apiMailService: ApiMailService<IMail>,
+    private sanitizer: DomSanitizer,
+    public dialog: MatDialog
+  )
+  {
+    
+  }
+  ngOnInit(): void {
+    this.loadTemplate();
+  }
+  loadTemplate(){
+    this.apiTemplateService.Get({}).subscribe((response: ITemplate[]) => {
+      this.templates = response;
+      if (this.templates.length > 0) {
+        this.selectedTemplate = this.templates[0];
+        this.safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(this.selectedTemplate.content);
+      }
+    })
+  }
+  selectTemplate(template: ITemplate) {
+    this.selectedTemplate = template;
+  }
+  onContentChange(content: string) {
+    clearTimeout(this.updatePreviewTimeout);
+    this.updatePreviewTimeout = setTimeout(() => {
+      this.safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(content);
+    }, 300); // debounce 300ms
+  }
+  newTemplate(templateName: string) {
+    this.selectedTemplate = {
+      templateName: templateName,
+      content: `<!DOCTYPE html>
+<html>
+  <head>
+    <title>${templateName}</title>
+  </head>
+  <body>
+    <h1>Hello world!</h1>
+  </body>
+</html>`,
+      jsonModel: '{}'
+    };
+    let oldTemplate = this.templates.find(t => t.templateName === this.selectedTemplate.templateName);
+    if(oldTemplate) {
+      this.selectedTemplate = oldTemplate;
+    }
+    else{
+      this.templates.push(this.selectedTemplate);
+    }
+    
+  }
+  saveTemplate() {
+    //console.log('Saving template:', this.selectedTemplate);
+    
+    console.log('Saving template:', this.selectedTemplate);
+    this.apiTemplateService.Create(this.selectedTemplate)
+                .pipe(catchError(async (err) => this.handleError(err)))
+                .subscribe((result: any) => {
+                    //this.templates.push(newTemplate);
+                });
+  }
+  handleError(error: any) {
+        console.error('An error occurred:', error);
+  }
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: this.nameTemplate,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      
+      if(!result || result.trim() === '') {
+        return;
+      }
+      this.newTemplate(result);
+    });
+  }
+  sendMail() {
+    this.mail.templateName = this.selectedTemplate.templateName;
+    this.mail.jsonBody = this.selectedTemplate.jsonModel;
+    this.mail.subject = "Subject of the email here";
+    this.mail.toEmail = "tranhaideveloper@gmail.com"
+    if(!this.mail.toEmail || !this.mail.subject || !this.mail.templateName || !this.mail.jsonBody) {
+      alert('Vui lòng nhập đầy đủ thông tin email');
+      return;
+    }
+    this.apiMailService.Create(this.mail, 'send')
+                .pipe(catchError(async (err) => this.handleError(err)))
+                .subscribe((result: any) => {
+                    console.log('Email sent successfully:', result);
+                });
+  }
+}

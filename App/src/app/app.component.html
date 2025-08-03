@@ -1,0 +1,36 @@
+<mat-drawer-container class="container">
+  <mat-drawer mode="side" opened>
+    <mat-toolbar>
+      <span>Mail Template</span>
+    </mat-toolbar>
+    <mat-list>
+      @for (template of templates; track template) {
+        <mat-list-item (click)="selectTemplate(template)">{{template.templateName}}</mat-list-item>
+      }
+      
+    </mat-list>
+  </mat-drawer>
+  <mat-drawer-content>
+    
+    <main>
+      <mat-toolbar>
+        <button mat-icon-button color="primary" class="example-icon" aria-label="Example icon-button with menu icon">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span>{{selectedTemplate.templateName}}</span>
+        <span class="example-spacer"></span>
+        <button (click)="openDialog()" mat-flat-button color="primary" style="margin-right: 20px;">New </button>
+        <button (click)="saveTemplate()" mat-flat-button color="primary" style="margin-right: 20px;">Save </button>
+        <button (click)="sendMail()" mat-flat-button color="primary">Send Mail </button>
+  </mat-toolbar>
+      <div style="display: flex;">
+          <div class="resizable">
+            <div class="resizable-json" style="height: 30vh;"><ngx-monaco-editor class="resizable-json" [options]="JsonOptions" [(ngModel)]="selectedTemplate.jsonModel"></ngx-monaco-editor></div>
+            <div style="height: 69vh;"><ngx-monaco-editor (ngModelChange)="onContentChange($event)"  [options]="HtmlOptions" [(ngModel)]="selectedTemplate.content"></ngx-monaco-editor></div>
+          </div>
+          <iframe style="height:calc(100vh - 70px); width: 50%; overflow: auto;" [attr.srcdoc]="safeHtmlContent"></iframe>
+      </div>
+    </main>
+  </mat-drawer-content>
+</mat-drawer-container>
+<router-outlet />

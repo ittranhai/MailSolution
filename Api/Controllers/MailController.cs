@@ -37,7 +37,7 @@ public class MailController : ControllerBase
                     Body = result
                 };
                 await _mailService.SendEmailAsync(mailModel);
-                return Ok("ok");
+                return Ok();
             }
             else
             {
