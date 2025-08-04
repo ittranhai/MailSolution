@@ -4,7 +4,7 @@
     <input matInput [(ngModel)]="data">
   </mat-form-field>
 </mat-dialog-content>
-<mat-dialog-actions >
+<mat-dialog-actions style="justify-content: space-between;">
   <button mat-flat-button color="warn" style="width: 150px;" (click)="onNoClick()">Cancel</button>
   <button mat-flat-button color="primary" style="width: 150px;" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
 </mat-dialog-actions>

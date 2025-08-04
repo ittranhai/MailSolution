@@ -7,10 +7,12 @@ import { ITemplate } from './shared/models/account';
 import { MonacoEditorConstructionOptions, MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 import { ApiMailService, ApiTempateService } from './shared/services/all.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { catchError } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogComponent } from './shared/components/dialog.component';
+import { DialogComponent } from './shared/components/create-template/dialog.component';
 import { IMail } from './shared/models/mail';
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { SendmailTemplateComponent } from './shared/components/sendmail-template/sendmailtemplate.component';
 
 @Component({
   selector: 'app-root',
@@ -53,7 +55,8 @@ export class AppComponent {
     protected apiTemplateService: ApiTempateService<ITemplate>,
     protected apiMailService: ApiMailService<IMail>,
     private sanitizer: DomSanitizer,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    protected snackBar: MatSnackBar,
   )
   {
     
@@ -103,17 +106,25 @@ export class AppComponent {
     
   }
   saveTemplate() {
-    //console.log('Saving template:', this.selectedTemplate);
-    
     console.log('Saving template:', this.selectedTemplate);
     this.apiTemplateService.Create(this.selectedTemplate)
-                .pipe(catchError(async (err) => this.handleError(err)))
+                .pipe(catchError((err) => this.handleError(err)))
                 .subscribe((result: any) => {
-                    //this.templates.push(newTemplate);
+                    this.openSnackBar("Save template success", "close");
                 });
   }
   handleError(error: any) {
-        console.error('An error occurred:', error);
+    console.error('An error occurred:', error);
+    let message;
+    if (error.status === 400) {
+      message = error.error;
+    }
+    else 
+    {
+      message = error.statusText;
+    }
+    this.openSnackBar(message, "close"); 
+    return throwError(() => error);
   }
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogComponent, {
@@ -131,16 +142,33 @@ export class AppComponent {
   sendMail() {
     this.mail.templateName = this.selectedTemplate.templateName;
     this.mail.jsonBody = this.selectedTemplate.jsonModel;
-    this.mail.subject = "Subject of the email here";
-    this.mail.toEmail = "tranhaideveloper@gmail.com"
-    if(!this.mail.toEmail || !this.mail.subject || !this.mail.templateName || !this.mail.jsonBody) {
-      alert('Vui lòng nhập đầy đủ thông tin email');
+    if(!this.mail.toEmail || !this.mail.subject || !this.mail.templateName) {
+      this.openSnackBar("Vui lòng nhập đầy đủ thông tin email", "close"); 
       return;
     }
     this.apiMailService.Create(this.mail, 'send')
-                .pipe(catchError(async (err) => this.handleError(err)))
+                .pipe(catchError((err) => this.handleError(err)))
                 .subscribe((result: any) => {
-                    console.log('Email sent successfully:', result);
+                    this.openSnackBar("send mail success", "close");
                 });
+  }
+  openSnackBar(message: string, action?: string, verticalPosition: 'top' | 'bottom' = 'top', horizontalPosition: 'start' | 'center' | 'end' | 'left' | 'right' = 'center') {
+        this.snackBar.open(message, action, {
+            horizontalPosition: horizontalPosition,
+            verticalPosition: verticalPosition,
+            duration: 5000,
+            panelClass: ['snackbar', 'snackbar-error']
+        });
+  }
+  openDialogSendmail() {
+    const dialogRef = this.dialog.open(SendmailTemplateComponent, {
+      data: this.mail,
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(!result || result.toEmail.trim() === '' || result.subject.trim() === '') {
+        return;
+      }
+      this.sendMail();
+    });
   }
 }

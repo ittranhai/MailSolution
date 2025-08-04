@@ -6,4 +6,8 @@ services:
     build:
       context: .
       dockerfile: Api/Dockerfile
-  
+  services.App:
+    image: ${DOCKER_REGISTRY-}app
+    build:
+      context: .
+      dockerfile: App/Dockerfile

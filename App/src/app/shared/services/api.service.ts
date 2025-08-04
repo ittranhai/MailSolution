@@ -38,6 +38,6 @@ export abstract class ApiService<T> {
     
     public GetHost(): any {
         //return this.storageService.retrieve('purchaseUrl');
-        return ("http://localhost:5074");
+        return ((window as any)['appConfig'].apiUrl);
     }
 }

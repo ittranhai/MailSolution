@@ -13,3 +13,8 @@ services:
       - MailSetting__Port=587
     ports:
       - "8000:80"
+  services.App:
+    ports:
+      - "4300:80" 
+    volumes:
+      - ./env/app.config.json:/usr/share/nginx/html/assets/config.json:ro
