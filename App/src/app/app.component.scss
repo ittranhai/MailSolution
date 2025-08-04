@@ -16,24 +16,6 @@ mat-drawer
 {
     display: flex !important; justify-content: center !important;
 }
-ngx-monaco-editor {
-  height: calc(100% - 60px);
-  width: 100%;
-}
-.resizable {
-  width: 50%;
-  resize: both; /* Cho phép kéo ngang */
-  overflow: auto;
-  cursor: r-resize; /* Hiện con trỏ resize góc dưới bên phải */
-  max-height: calc(100vh - 64px); /* Giới hạn chiều cao tối đa */
-}
-.resizable-json {
-  margin-bottom: 10px;
-  width: 100%;
-  resize: vertical; /* Cho phép kéo ngang */
-  overflow: auto;
-  cursor: n-resize; /* Hiện con trỏ resize góc dưới bên phải */
-}
 .example-spacer {
   flex: 1 1 auto;
 }

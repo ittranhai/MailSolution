@@ -13,11 +13,12 @@ import { DialogComponent } from './shared/components/create-template/dialog.comp
 import { IMail } from './shared/models/mail';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { SendmailTemplateComponent } from './shared/components/sendmail-template/sendmailtemplate.component';
+import { AngularSplitModule } from 'angular-split';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,SharedModule,MatSidenavModule,MonacoEditorModule],
+  imports: [RouterOutlet,SharedModule,MatSidenavModule,MonacoEditorModule,AngularSplitModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [

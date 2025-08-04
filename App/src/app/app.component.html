@@ -22,12 +22,22 @@
         <button (click)="reviewTemplate()" mat-raised-button color="primary" style="width: 150px; margin-right: 20px;">Review</button>
         <button (click)="openDialogSendmail()" mat-raised-button color="primary" style="width: 150px;">Send Mail </button>
   </mat-toolbar>
-      <div style="display: flex;">
-          <div class="resizable">
-            <div class="resizable-json" style="height: 30vh;"><ngx-monaco-editor class="resizable-json" [options]="JsonOptions" [(ngModel)]="selectedTemplate.jsonModel"></ngx-monaco-editor></div>
-            <div style="height: 69vh;"><ngx-monaco-editor (ngModelChange)="onContentChange($event)"  [options]="HtmlOptions" [(ngModel)]="selectedTemplate.content"></ngx-monaco-editor></div>
-          </div>
-          <iframe style="height:calc(100vh - 70px); width: 50%; overflow: auto;" [attr.srcdoc]="safeHtmlContent"></iframe>
+      <div style="width: 100%; height:calc(100vh - 64px);">
+        <as-split direction="horizontal">
+          <as-split-area [size]="40">
+            <as-split direction="vertical">
+              <as-split-area [size]="25">
+                <ngx-monaco-editor [options]="JsonOptions" [(ngModel)]="selectedTemplate.jsonModel"></ngx-monaco-editor>
+              </as-split-area>
+              <as-split-area [size]="75">
+                <ngx-monaco-editor (ngModelChange)="onContentChange($event)"  [options]="HtmlOptions" [(ngModel)]="selectedTemplate.content"></ngx-monaco-editor>
+              </as-split-area>
+            </as-split>
+          </as-split-area>
+          <as-split-area [size]="60">
+            <iframe style="height:calc(100% - 10px); width: 100%; overflow: auto;" [attr.srcdoc]="safeHtmlContent"></iframe>
+          </as-split-area>
+        </as-split>
       </div>
     </main>
   </mat-drawer-content>
