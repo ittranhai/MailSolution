@@ -75,9 +75,7 @@ export class AppComponent {
         this.safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(this.selectedTemplate.content);
       }
       else{
-        this.newTemplate('TestTemplate');
-        this.activeTemplate = 'TestTemplate';
-        this.safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(this.selectedTemplate.content);
+        this.newTemplate('TestTemplate');       
       }
     })
   }
@@ -117,10 +115,11 @@ export class AppComponent {
     if(oldTemplate) {
       this.selectedTemplate = oldTemplate;
     }
-    else{
+    else{ 
       this.templates.push(this.selectedTemplate);
     }
-    
+    this.activeTemplate = this.selectedTemplate.templateName;
+    this.safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(this.selectedTemplate.content);
   }
   saveTemplate(IsShowMessage:boolean = true) {
     console.log('Saving template:', this.selectedTemplate);
