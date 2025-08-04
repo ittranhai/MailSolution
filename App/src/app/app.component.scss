@@ -37,3 +37,13 @@ ngx-monaco-editor {
 .example-spacer {
   flex: 1 1 auto;
 }
+::ng-deep mat-list-item:hover {
+  background-color: #f0f0f0;
+  cursor: pointer !important;
+}
+::ng-deep mat-list-item.active-template
+{
+  background-color: #3f51b5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: white !important;
+}

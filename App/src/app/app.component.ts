@@ -27,6 +27,7 @@ import { SendmailTemplateComponent } from './shared/components/sendmail-template
 })
 export class AppComponent {
   templates: ITemplate[] =[];
+  activeTemplate:string = '';
   mail: IMail = {
     toEmail: '',
     subject: '',
@@ -69,12 +70,14 @@ export class AppComponent {
       this.templates = response;
       if (this.templates.length > 0) {
         this.selectedTemplate = this.templates[0];
+        this.activeTemplate = this.selectedTemplate.templateName;
         this.safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(this.selectedTemplate.content);
       }
     })
   }
   selectTemplate(template: ITemplate) {
     this.selectedTemplate = template;
+    this.activeTemplate = this.selectedTemplate.templateName;
   }
   onContentChange(content: string) {
     clearTimeout(this.updatePreviewTimeout);

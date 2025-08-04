@@ -5,22 +5,22 @@
     </mat-toolbar>
     <mat-list>
       @for (template of templates; track template) {
-        <mat-list-item (click)="selectTemplate(template)">{{template.templateName}}</mat-list-item>
+        <mat-list-item [ngClass]="{ 'active-template': activeTemplate === template.templateName }" (click)="selectTemplate(template)">{{template.templateName}}</mat-list-item>
+        <mat-divider></mat-divider>
       }
-      
     </mat-list>
   </mat-drawer>
   <mat-drawer-content>
     
     <main>
       <mat-toolbar color="primary">
-        <button (click)="openDialog()" mat-raised-button color="accent" style="width: 150px; ">New </button>
-        <button (click)="saveTemplate()" mat-raised-button color="accent" style="width: 150px; margin-left: 20px;">Save </button>
+        <button (click)="openDialog()" mat-raised-button color="primary" style="width: 150px; ">New </button>
+        <button (click)="saveTemplate()" mat-raised-button color="primary" style="width: 150px; margin-left: 20px;">Save </button>
         <span class="example-spacer"></span>
         <span>{{selectedTemplate.templateName}}</span>
         <span class="example-spacer"></span>
-        <button (click)="reviewTemplate()" mat-raised-button color="accent" style="width: 150px; margin-right: 20px;">Review</button>
-        <button (click)="openDialogSendmail()" mat-raised-button color="accent" style="width: 150px;">Send Mail </button>
+        <button (click)="reviewTemplate()" mat-raised-button color="primary" style="width: 150px; margin-right: 20px;">Review</button>
+        <button (click)="openDialogSendmail()" mat-raised-button color="primary" style="width: 150px;">Send Mail </button>
   </mat-toolbar>
       <div style="display: flex;">
           <div class="resizable">
