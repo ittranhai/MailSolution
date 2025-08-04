@@ -2,6 +2,8 @@ using MailSolution.Api.Models;
 using MailSolution.Api.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Dynamic;
 using System.Text;
 namespace Api.Controllers;
 
@@ -9,10 +11,10 @@ namespace Api.Controllers;
 [Route("[controller]")]
 public class TemplateController : ControllerBase
 {
-
-    public TemplateController()
+    private readonly IViewRenderService _viewRenderService;
+    public TemplateController(IViewRenderService viewRenderService)
     {
-
+        _viewRenderService = viewRenderService;
     }
 
     [AllowAnonymous]
@@ -28,7 +30,7 @@ public class TemplateController : ControllerBase
                 Directory.CreateDirectory(GetPathCombine("Views"));
                 Directory.CreateDirectory(GetPathCombine("MailModels"));
             }
-            
+
             // Save the a file to views folder
             System.IO.File.WriteAllText(GetPathCombine(fileView), model.Content, Encoding.UTF8);
             // Save the a file to views MailModels
@@ -59,8 +61,8 @@ public class TemplateController : ControllerBase
                 var tempalte = new TemplateModel
                 {
                     TemplateName = fileName,
-                    JsonModel = System.IO.File.ReadAllText(GetPathCombine(folderModels+"/"+fileName+".txt"), Encoding.UTF8),
-                    Content = System.IO.File.ReadAllText(GetPathCombine(folderView+"/"+fileName+".cshtml"), Encoding.UTF8)
+                    JsonModel = System.IO.File.ReadAllText(GetPathCombine(folderModels + "/" + fileName + ".txt"), Encoding.UTF8),
+                    Content = System.IO.File.ReadAllText(GetPathCombine(folderView + "/" + fileName + ".cshtml"), Encoding.UTF8)
                 };
                 templates.Add(tempalte);
             }
@@ -74,5 +76,31 @@ public class TemplateController : ControllerBase
     private string GetPathCombine(string path)
     {
         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+    }
+    [AllowAnonymous]
+    [HttpPost("Render")]
+    public async Task<IActionResult> TestSendMail([FromBody] TemplateModel model)
+    {
+        var data = JsonConvert.DeserializeObject<ExpandoObject>(model.JsonModel);
+        if (data != null)
+        {
+            var result = await _viewRenderService.RenderToStringAsync(model.TemplateName, data);
+            if (!string.IsNullOrEmpty(result)) 
+            {
+                return Ok(new
+                {
+                    Content = result,
+                });
+            }
+            else
+            {
+                return BadRequest("can not render template");
+            }
+        }
+        else
+        {
+            return BadRequest("JsonBody Error");
+        }
+        
     }
 }

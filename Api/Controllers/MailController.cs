@@ -3,8 +3,7 @@ using MailSolution.Api.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Dynamic;
-using System.Text;
-using System.Text.Json;
+using Newtonsoft.Json;
 namespace Api.Controllers;
 
 [ApiController]
@@ -24,7 +23,7 @@ public class MailController : ControllerBase
     public async Task<IActionResult> TestSendMail([FromBody] SendMailModel model)
     {
         //string json = "{\"Name\":\"Alice\",\"Age\":30}";
-        var data = JsonSerializer.Deserialize<ExpandoObject>(model.JsonBody);
+        var data = JsonConvert.DeserializeObject<ExpandoObject>(model.JsonBody);
         if (data != null)
         {
             var result = await _viewRenderService.RenderToStringAsync(model.TemplateName, data);

@@ -82,6 +82,14 @@ export class AppComponent {
       this.safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(content);
     }, 300); // debounce 300ms
   }
+  async reviewTemplate(){
+    await this.saveTemplate(false);
+    this.apiTemplateService.Create(this.selectedTemplate,'Render')
+                .pipe(catchError((err) => this.handleError(err)))
+                .subscribe((result: any) => {
+                    this.safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(result.content);
+                });
+  }
   newTemplate(templateName: string) {
     this.selectedTemplate = {
       templateName: templateName,
@@ -105,12 +113,14 @@ export class AppComponent {
     }
     
   }
-  saveTemplate() {
+  saveTemplate(IsShowMessage:boolean = true) {
     console.log('Saving template:', this.selectedTemplate);
     this.apiTemplateService.Create(this.selectedTemplate)
                 .pipe(catchError((err) => this.handleError(err)))
                 .subscribe((result: any) => {
+                  if(IsShowMessage){
                     this.openSnackBar("Save template success", "close");
+                  }
                 });
   }
   handleError(error: any) {

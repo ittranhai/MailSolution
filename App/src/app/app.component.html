@@ -1,6 +1,6 @@
 <mat-drawer-container class="container">
   <mat-drawer mode="side" opened>
-    <mat-toolbar>
+    <mat-toolbar color="primary">
       <span>Mail Template</span>
     </mat-toolbar>
     <mat-list>
@@ -13,15 +13,14 @@
   <mat-drawer-content>
     
     <main>
-      <mat-toolbar>
-        <button mat-icon-button color="primary" class="example-icon" aria-label="Example icon-button with menu icon">
-          <mat-icon>menu</mat-icon>
-        </button>
+      <mat-toolbar color="primary">
+        <button (click)="openDialog()" mat-raised-button color="accent" style="width: 150px; ">New </button>
+        <button (click)="saveTemplate()" mat-raised-button color="accent" style="width: 150px; margin-left: 20px;">Save </button>
+        <span class="example-spacer"></span>
         <span>{{selectedTemplate.templateName}}</span>
         <span class="example-spacer"></span>
-        <button (click)="openDialog()" mat-flat-button color="primary" style="margin-right: 20px;">New </button>
-        <button (click)="saveTemplate()" mat-flat-button color="primary" style="margin-right: 20px;">Save </button>
-        <button (click)="openDialogSendmail()" mat-flat-button color="primary">Send Mail </button>
+        <button (click)="reviewTemplate()" mat-raised-button color="accent" style="width: 150px; margin-right: 20px;">Review</button>
+        <button (click)="openDialogSendmail()" mat-raised-button color="accent" style="width: 150px;">Send Mail </button>
   </mat-toolbar>
       <div style="display: flex;">
           <div class="resizable">
