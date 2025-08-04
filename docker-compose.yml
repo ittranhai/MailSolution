@@ -2,12 +2,12 @@
 
 services:
   services.Api:
-    image: ${DOCKER_REGISTRY-}mail-api
+    image: ${DOCKER_REGISTRY-}mail-solution-api
     build:
       context: .
       dockerfile: Api/Dockerfile
   services.App:
-    image: ${DOCKER_REGISTRY-}app
+    image: ${DOCKER_REGISTRY-}mail-solution-app
     build:
       context: .
       dockerfile: App/Dockerfile
