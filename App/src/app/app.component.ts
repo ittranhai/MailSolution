@@ -74,6 +74,11 @@ export class AppComponent {
         this.activeTemplate = this.selectedTemplate.templateName;
         this.safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(this.selectedTemplate.content);
       }
+      else{
+        this.newTemplate('TestTemplate');
+        this.activeTemplate = 'TestTemplate';
+        this.safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(this.selectedTemplate.content);
+      }
     })
   }
   selectTemplate(template: ITemplate) {
