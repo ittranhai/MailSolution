@@ -4,7 +4,7 @@ services:
   services.Api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      # - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://0.0.0.0:80
     ports:
       - "8000:80"
     volumes:
