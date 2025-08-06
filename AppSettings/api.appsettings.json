@@ -6,7 +6,7 @@
     }
   },
   "AllowedHosts": "*",
-  "ServiceName": "Restart FFF Producttion Mail Solution API",
+  "ServiceName": "Producttion Mail Solution API",
   "MailSetting": {
     "Mail": "ittranhai@gmail.com",
     "DisplayName": "Company Branch Name",
