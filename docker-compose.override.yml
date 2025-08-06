@@ -2,7 +2,7 @@
 
 services:
   services.Api:
-    environment:
+    environment: # khi enviroment thay đổi và chạy lệnh docker compose up thì sẽ restart container
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80       
       # - ServiceName=AAA Mail Solution API
@@ -13,7 +13,7 @@ services:
       # - MailSetting__Port=587
     ports:
       - "8000:80"
-    volumes:
+    volumes: # khi volumes thay đổi (chạy lệnh docker compose up không tác dụng) cần chạy docker compose restart services.Api
       - ./AppSettings/api.appsettings.json:/app/appsettings.json
   services.App:
     ports:
