@@ -123,7 +123,7 @@ public class TemplateController : ControllerBase
 
                 // ===== KHÔNG SCALE =====
                 converter.Document.FitPageWidth = false;
-                converter.Document.FitPageHeight = false;
+                converter.Document.FitPageHeight = true;
 
                 // ===== VIEWPORT (QUAN TRỌNG) =====
                 converter.BrowserWidth = 1024;
