@@ -1,7 +1,7 @@
 <mat-drawer-container class="container">
   <mat-drawer mode="side" opened>
     <mat-toolbar color="primary">
-      <span>Mail Template</span>
+      <span>Template</span>
     </mat-toolbar>
     <mat-list>
       @for (template of templates; track template) {
@@ -23,6 +23,8 @@
         <button (click)="reviewTemplate()" mat-raised-button color="primary"
           style="width: 150px; margin-right: 20px;">Review</button>
         <button (click)="openDialogSendmail()" mat-raised-button color="primary" style="width: 150px;">Send Mail
+        </button>
+        <button (click)="exportPdf()" mat-raised-button color="primary" style="width: 150px;">Export PDF
         </button>
       </mat-toolbar>
       <div style="width: 100%; height:calc(100vh - 64px);">

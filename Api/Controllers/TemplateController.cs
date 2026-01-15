@@ -1,3 +1,4 @@
+using HiQPdf;
 using MailSolution.Api.Models;
 using MailSolution.Api.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
@@ -103,4 +104,45 @@ public class TemplateController : ControllerBase
         }
         
     }
+    [AllowAnonymous]
+    [HttpPost("ExportPDF")]
+    public async Task<IActionResult> ExportPDF([FromBody] TemplateModel model)
+    {
+        var data = JsonConvert.DeserializeObject<ExpandoObject>(model.JsonModel);
+        if (data != null)
+        {
+            var result = await _viewRenderService.RenderToStringAsync(model.TemplateName, data);
+            if (!string.IsNullOrEmpty(result)) 
+            {
+                HtmlToPdf converter = new HtmlToPdf();
+                converter.Document.PageSize = PdfPageSize.A4;
+                converter.Document.PageOrientation = PdfPageOrientation.Portrait;
+
+                // ===== MARGIN =====
+                converter.Document.Margins = new PdfMargins(0);
+
+                // ===== KHÔNG SCALE =====
+                converter.Document.FitPageWidth = false;
+                converter.Document.FitPageHeight = false;
+
+                // ===== VIEWPORT (QUAN TRỌNG) =====
+                converter.BrowserWidth = 1024;
+
+
+                var htmlToPdfData = converter.ConvertHtmlToMemory(result, null);
+                var content = new MemoryStream(htmlToPdfData);
+                return File(content, "application/pdf", model.TemplateName + ".pdf");
+            }
+            else
+            {
+                return BadRequest("can not ExportPDF");
+            }
+        }
+        else
+        {
+            return BadRequest("JsonBody Error");
+        }
+        
+    }
+    
 }

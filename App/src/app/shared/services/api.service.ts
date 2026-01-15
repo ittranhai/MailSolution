@@ -35,7 +35,17 @@ export abstract class ApiService<T> {
         let url = this.GetHost() + this.path;
         return this.dataService.delete_item_selected(url,ids).pipe<any>(tap((response: any) => true));
     }
-    
+    export(data: any, action: string = ''): Observable<Blob> {
+        let url = this.GetHost() + this.path;
+        if (action) {
+            url += `/${action}`;
+        }
+        return this.dataService.export(url, data,{
+        responseType: 'blob' as 'json',
+        observe: 'body'
+        }).pipe<Blob>(tap((response: any) => true));
+    }
+
     public GetHost(): any {
         //return this.storageService.retrieve('purchaseUrl');
         return ((window as any)['appsettings'].apiUrl);

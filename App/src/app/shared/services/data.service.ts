@@ -2,7 +2,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 
 
 // Implementing a Retry-Circuit breaker policy 
@@ -28,7 +28,9 @@ export class DataService {
     post(url: string, data: any, params?: any): Observable<Response> {
         return this.doPost(url, data, false, params);
     }
-
+    export(url: string, data: any, params?: any): Observable<any> {
+        return this.doExport(url, data, false, params);
+    }
     putWithId(url: string, data: any, params?: any): Observable<Response> {
         return this.doPut(url, data, true, params);
     }
@@ -44,6 +46,18 @@ export class DataService {
                 }),
                 catchError(this.handleError)
             );
+    }
+    private doExport(url: string, data: any, showLoading = false, options?: any): Observable<any> {
+
+        // 🔥 BYPASS FILE / PDF
+        if (options?.responseType === 'blob') {
+            return this.http.post(url, data, options);
+        }
+
+        // ⬇️ logic cũ cho JSON
+        return this.http.post(url, data, options).pipe(
+            map((res: any) => res?.data ?? res)
+        );
     }
     
     delete(url: string, params?: any): Observable<Response> {

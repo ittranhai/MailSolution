@@ -189,4 +189,17 @@ export class AppComponent {
       this.sendMail();
     });
   }
+  async exportPdf() {
+    await this.saveTemplate(false);
+    this.apiTemplateService.export(this.selectedTemplate, 'ExportPDF')
+      .pipe(catchError((err) => this.handleError(err)))
+      .subscribe((blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = this.selectedTemplate.templateName + '.pdf';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
+  }
 }
